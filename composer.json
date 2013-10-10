@@ -1,0 +1,19 @@
+{
+    "name": "nmenglund/mdb",
+    "type": "library",
+    "description": "Miniature PHP5 DB library for MySQL.",
+    "homepage": "http://github.com/nmenglund/mdb",
+    "license": "MIT",
+    "authors" : [
+        {
+            "name": "Nils Magnus Englund",
+            "email": "nme@stepone.no"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0"
+    },
+    "autoload": {
+        "psr-0": { "Mdb": "lib" }
+    }
+}
