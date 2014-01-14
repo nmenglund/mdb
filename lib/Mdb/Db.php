@@ -9,14 +9,16 @@ class Db
     private $username;
     private $password;
     private $database;
+    private $port;
     private $enableLogging;
 
-    public function __construct ($host, $user, $pass, $db)
+    public function __construct ($host, $user, $pass, $db, $port = null)
     {
         $this->hostname = $host;
         $this->username = $user;
         $this->password = $pass;
         $this->database = $db;
+        $this->port = $port;
     }
 
     public function getHostname ()
@@ -36,7 +38,7 @@ class Db
 
     private function connect ()
     {
-        $this->link = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+        $this->link = new \mysqli($this->hostname, $this->username, $this->password, $this->database, $this->port);
         if ($this->link === false)
         {
             throw new DataException(mysqli_connect_error(), mysqli_connect_errno());
