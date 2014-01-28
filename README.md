@@ -22,6 +22,22 @@ Using `composer.json`:
         echo "User: {$user['username']}\n";
     }
 
+## Transformer usage
+
+    $transformer = new \Mdb\Transformer(
+                    new \Mdb\Db('localhost','usr','pass','source'),
+                    new \Mdb\Db('localhost','usr','pass','destination'));
+
+    $transformer->queryToOne(
+        "SELECT option_id, option_name, option_value FROM wp_options",
+        "new_option_table",
+        function ($src) {
+            $newRow = array(
+                'name' => $src['option_name'],
+                'value' => $src['option_value']);
+            return $newRow;
+        });
+
 ## Dumper usage
 
     $connection = new \Mdb\Db('localhost', 'user', 'pass', 'database', $port);
