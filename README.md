@@ -1,6 +1,7 @@
 # mdb
 
-Miniature PHP5 DB library for MySQL.
+Miniature PHP5 DB library for MySQL, with a handy Transformer class for performing
+elementary ETL (extract, transform, load) and batch tasks.
 
 ## Installation
 
@@ -20,3 +21,17 @@ Using `composer.json`:
     {
         echo "User: {$user['username']}\n";
     }
+
+## Dumper usage
+
+    $connection = new \Mdb\Db('localhost', 'user', 'pass', 'database', $port);
+
+    // Dump HTML for all tables in the database
+    \Mdb\HtmlDumper::dumpAll($connection);
+
+    // Dump HTML for tables with a name matching the regex /^wp_/
+    \Mdb\HtmlDumper::dumpSome($connection, '/^wp_/');
+
+    // Dump HTML for specific table or query (assume table if /^[a-z_]+$/)
+    \Mdb\HtmlDumper::dump($connection, 'wp_options');
+    \Mdb\HtmlDumper::dump($connection, 'SELECT * FROM wp_options');
