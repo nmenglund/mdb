@@ -41,11 +41,9 @@ class Transformer
         }
     }
 
-    private function buildInsertQuery ($table, $data)
+    public function insert ($destination_table, $data)
     {
-        $fields = array_keys($data);
-        $q = "INSERT INTO $table (" . implode(',',$fields) .") VALUES ('".implode("','",array_map(array($this->dst, 'escape'),$data))."')";
-        return $q;
+        return $this->dst->insert("INSERT INTO $destination_table (" . implode(',',array_keys($data)) .") VALUES ('".implode("','",array_map(array($this->dst, 'escape'),$data))."')");
     }
 
     public function oneToOne ($source_table, $destination_table, $callback)
@@ -72,10 +70,9 @@ class Transformer
             $dstFields = call_user_func($callback, $srcRow);
             if ($dstFields !== false)
             {
-                $insertQuery = $this->buildInsertQuery($destination_table, $dstFields);
                 try
                 {
-                    $this->dst->insert($insertQuery);
+                    $this->insert($destination_table, $dstFields);
                 }
                 catch (Exception $ex)
                 {
