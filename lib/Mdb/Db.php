@@ -131,6 +131,29 @@ class Db
         $result->close();
         return $row;
     }
+    
+    public function getArray ($sql)
+    {
+        if ($this->link === false)
+        {
+            $this->connect();
+        }
+        if (!$result = $this->link->query($sql))
+        {
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+        }
+        if (!$result->num_rows)
+        {
+            return null;
+        }
+        $res = array();
+        while ($row = $result->fetch_array())
+        {
+            $res[] = $row[0];
+        }
+        $result->close();
+        return $res;
+    }
 
     public function getAll ($sql, $assoc_key = false) // false on failure, NULL on no rows returned, array (assoc) of all rows if successful
     {
