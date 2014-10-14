@@ -98,7 +98,7 @@ class Db
         if (!is_string($id))
             throw new \InvalidArgumentException("Expected string, received ".gettype($id));
         if (!preg_match('/^[a-zA-Z0-9_\$]+$/', $id))
-            throw new \InvalidArgumentException("MySQL identified '$id' is invalid");
+            throw new \InvalidArgumentException("MySQL identifier '$id' is invalid");
         return $id;
     }
 
