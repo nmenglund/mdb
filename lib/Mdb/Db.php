@@ -93,6 +93,32 @@ class Db
         return $this->link->insert_id;
     }
 
+    private function validateSchemaId ($id)
+    {
+        if (!is_string($id))
+            throw new \InvalidArgumentException("Expected string, received ".gettype($id));
+        if (!preg_match('/^[a-zA-Z0-9_\$]+$/', $id))
+            throw new \InvalidArgumentException("MySQL identified '$id' is invalid");
+        return $id;
+    }
+
+    public function insertFields ($tableName, $data = array())
+    {
+        if ($this->link === false)
+        {
+            $this->connect();
+        }
+
+        $sql  = "INSERT INTO " . $this->validateSchemaId($tableName);
+        $sql .= " (" . implode(',', array_map(array($this,'validateSchemaId'), array_keys($data))) . ")";
+        $sql .= " VALUES (" . implode(',', array_map(array($this,'quote'), array_values($data))) . ")";
+        if (!$result = $this->link->query($sql))
+        {
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+        }
+        return $this->link->insert_id;
+    }
+
     public function getOne ($sql) // false on failure, NULL on no rows returned
     {
         if ($this->link === false)
@@ -131,7 +157,7 @@ class Db
         $result->close();
         return $row;
     }
-    
+
     public function getArray ($sql)
     {
         if ($this->link === false)
@@ -182,6 +208,11 @@ class Db
         }
         $result->close();
         return $res;
+    }
+
+    public function quote ($string)
+    {
+        return "'" . $this->escape($string) . "'";
     }
 
     public function escape ($string)
