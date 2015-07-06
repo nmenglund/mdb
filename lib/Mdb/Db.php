@@ -5,12 +5,12 @@ namespace Mdb;
 class Db
 {
     private $link = false;
+
     private $hostname;
     private $username;
     private $password;
     private $database;
     private $port;
-    private $enableLogging;
 
     public function __construct ($host, $user, $pass, $db, $port = null)
     {
@@ -24,6 +24,11 @@ class Db
     public function getHostname ()
     {
         return $this->hostname;
+    }
+
+    public function getPort ()
+    {
+        return $this->port;
     }
 
     public function getUsername ()
@@ -45,7 +50,7 @@ class Db
         }
         if ($this->query("SET NAMES utf8") === false)
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), "SET NAMES utf8");
         }
     }
 
@@ -57,7 +62,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         if (!$result->num_rows)
         {
@@ -75,7 +80,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         return mysqli_affected_rows($this->link);
     }
@@ -88,7 +93,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         return $this->link->insert_id;
     }
@@ -114,7 +119,7 @@ class Db
         $sql .= " VALUES (" . implode(',', array_map(array($this,'quote'), array_values($data))) . ")";
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         return $this->link->insert_id;
     }
@@ -127,7 +132,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         if (!$result->num_rows)
         {
@@ -147,7 +152,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         if (!$result->num_rows)
         {
@@ -166,7 +171,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         if (!$result->num_rows)
         {
@@ -189,7 +194,7 @@ class Db
         }
         if (!$result = $this->link->query($sql))
         {
-            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link));
+            throw new DataException(mysqli_error($this->link), mysqli_errno($this->link), $sql);
         }
         if (!$result->num_rows)
         {
@@ -210,11 +215,21 @@ class Db
         return $res;
     }
 
+    /**
+     * Quote and escape a value for use in a query.
+     * @param  string $string The string to escape and quote
+     * @return string         The quoted and escaped string
+     */
     public function quote ($string)
     {
         return "'" . $this->escape($string) . "'";
     }
 
+    /**
+     * Escape a string for use in a query.
+     * @param  string $string The string to escape
+     * @return string         The escaped string
+     */
     public function escape ($string)
     {
         if ($this->link === false)

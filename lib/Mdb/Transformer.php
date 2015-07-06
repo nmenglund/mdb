@@ -41,11 +41,6 @@ class Transformer
         }
     }
 
-    public function insert ($destination_table, $data)
-    {
-        return $this->dst->insert("INSERT INTO $destination_table (" . implode(',',array_keys($data)) .") VALUES ('".implode("','",array_map(array($this->dst, 'escape'),$data))."')");
-    }
-
     public function oneToOne ($source_table, $destination_table, $callback)
     {
         return $this->queryToOne("SELECT * FROM $source_table", $destination_table, $callback);
@@ -72,7 +67,7 @@ class Transformer
             {
                 try
                 {
-                    $this->insert($destination_table, $dstFields);
+                    $this->dst->insertFields($destination_table, $dstFields);
                 }
                 catch (Exception $ex)
                 {

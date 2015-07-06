@@ -27,7 +27,7 @@ class HtmlDumper
         $res = $connection->select($query);
         if (!$res->hasRows())
         {
-    		echo "<p>No data in this table.</p>";
+            echo "<p>No data in this table.</p>";
             return;
         }
 
@@ -37,7 +37,7 @@ class HtmlDumper
         echo "  <thead>\n";
         echo "    <tr>\n";
         foreach ($fields as $field) {
-    		echo "        <th>{$field->name}</th>\n";
+            echo "        <th>{$field->name}</th>\n";
         }
         echo "    </tr>\n";
         echo "  </thead>\n";
@@ -55,7 +55,7 @@ class HtmlDumper
                     echo htmlspecialchars($row[$field->name]);
                 echo "</td>\n";
             }
-            echo "	</tr>\n";
+            echo "  </tr>\n";
         }
         echo "  </tbody>\n";
         echo "</table>";

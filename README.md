@@ -9,7 +9,7 @@ Using `composer.json`:
 
     {
         "require": {
-            "nmenglund/mdb": "*@dev"
+            "nmenglund/mdb": "*"
         }
     }
 
